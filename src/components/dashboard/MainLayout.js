@@ -50,7 +50,7 @@ const MainLayout = () => {
         </div>
         <div className="header-right">
           <div className="user-info">
-            <span className="user-name">{currentUser?.username}</span>
+            <span className="user-name">{currentUser?.email}</span>
             <span className="user-role">({currentUser?.role})</span>
           </div>
           <button className="live-data">Live Data</button>

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
 const AppContext = createContext();
 
@@ -14,8 +15,9 @@ export const AppProvider = ({ children }) => {
   // Authentication state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState(null);
 
   // Navigation state
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -28,13 +30,6 @@ export const AppProvider = ({ children }) => {
   const [demoBalance, setDemoBalance] = useState(100);
   const [demoHoldings, setDemoHoldings] = useState({});
   const [orderQuantity, setOrderQuantity] = useState(0);
-
-  // User accounts (should be moved to backend in production)
-  const users = {
-    admin: { password: 'admin123', role: 'Administrator', permissions: ['all'] },
-    temp: { password: 'temp123', role: 'Temporary User', permissions: ['view'] },
-    demo: { password: 'demo123', role: 'Demo User', permissions: ['view', 'trade'] }
-  };
 
   // Market data (should be moved to API/service)
   const marketData = {
@@ -65,6 +60,113 @@ export const AppProvider = ({ children }) => {
     ]
   };
 
+  // Check for existing session on mount
+  useEffect(() => {
+    checkSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
+      if (session) {
+        setIsLoggedIn(true);
+        await fetchUserProfile(session.user.id);
+      } else {
+        setIsLoggedIn(false);
+        setCurrentUser(null);
+        setUserProfile(null);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+
+      if (session) {
+        setIsLoggedIn(true);
+        await fetchUserProfile(session.user.id);
+      }
+    } catch (error) {
+      console.error('Error checking session:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUserProfile = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 is "no rows returned" - we'll create a profile in this case
+        console.error('Error fetching user profile:', error);
+      }
+
+      if (data) {
+        setUserProfile(data);
+        setCurrentUser({
+          email: session?.user?.email,
+          role: data.role || 'Client',
+          permissions: getUserPermissions(data.role),
+          isAdmin: data.is_admin || false
+        });
+      } else {
+        // Create a default profile if one doesn't exist
+        await createUserProfile(userId);
+      }
+    } catch (error) {
+      console.error('Error in fetchUserProfile:', error);
+    }
+  };
+
+  const createUserProfile = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .insert([
+          {
+            user_id: userId,
+            role: 'Client',
+            is_admin: false,
+            user_status: 'active'
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setUserProfile(data);
+      setCurrentUser({
+        email: session?.user?.email,
+        role: 'Client',
+        permissions: ['view', 'trade'],
+        isAdmin: false
+      });
+    } catch (error) {
+      console.error('Error creating user profile:', error);
+    }
+  };
+
+  const getUserPermissions = (role) => {
+    const permissionMap = {
+      'Administrator': ['all'],
+      'Premium': ['view', 'trade', 'documents', 'reports'],
+      'Client': ['view', 'trade', 'documents'],
+      'Demo User': ['view', 'trade'],
+      'Temporary User': ['view']
+    };
+    return permissionMap[role] || ['view'];
+  };
+
   // Helper functions
   const getAllMarketData = useCallback(() => {
     return [...marketData.stocks, ...marketData.crypto, ...marketData.commodities, ...marketData.currencies];
@@ -90,7 +192,7 @@ export const AppProvider = ({ children }) => {
     const basePrice = getCurrentPrice(symbol);
     const data = [];
     let price = basePrice * 0.95;
-    
+
     for (let i = 0; i < 30; i++) {
       const change = (Math.random() - 0.5) * 0.04;
       price = price * (1 + change);
@@ -99,39 +201,68 @@ export const AppProvider = ({ children }) => {
         price: parseFloat(price.toFixed(2))
       });
     }
-    
+
     data[29].price = basePrice;
     return data;
   }, [getCurrentPrice]);
 
-  // Login handler
-  const handleLogin = useCallback(() => {
-    if (users[username] && users[username].password === password) {
-      setIsLoggedIn(true);
-      setCurrentUser({
-        username,
-        role: users[username].role,
-        permissions: users[username].permissions
+  // Login handler with Supabase
+  const handleLogin = useCallback(async (email, password) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      return true;
+
+      if (error) throw error;
+
+      // Session will be set by the auth state change listener
+      return { success: true };
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: error.message };
     }
-    return false;
-  }, [username, password]);
+  }, []);
+
+  // Signup handler
+  const handleSignup = useCallback(async (email, password, metadata = {}) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata
+        }
+      });
+
+      if (error) throw error;
+
+      return { success: true, data };
+    } catch (error) {
+      console.error('Signup error:', error);
+      return { success: false, error: error.message };
+    }
+  }, []);
 
   // Logout handler
-  const handleLogout = useCallback(() => {
-    setIsLoggedIn(false);
-    setUsername('');
-    setPassword('');
-    setCurrentUser(null);
-    setCurrentPage('dashboard');
+  const handleLogout = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+      setIsLoggedIn(false);
+      setCurrentUser(null);
+      setUserProfile(null);
+      setSession(null);
+      setCurrentPage('dashboard');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }, []);
 
   // Demo trading handlers
   const handleDemoBuy = useCallback(() => {
     const price = getCurrentPrice(selectedAsset);
     const totalCost = price * orderQuantity;
-    
+
     if (totalCost <= demoBalance && orderQuantity > 0) {
       setDemoBalance(prev => prev - totalCost);
       setDemoHoldings(prev => ({
@@ -147,7 +278,7 @@ export const AppProvider = ({ children }) => {
   const handleDemoSell = useCallback(() => {
     const currentHolding = demoHoldings[selectedAsset] || 0;
     const price = getCurrentPrice(selectedAsset);
-    
+
     if (orderQuantity <= currentHolding && orderQuantity > 0) {
       const totalValue = price * orderQuantity;
       setDemoBalance(prev => prev + totalValue);
@@ -165,8 +296,9 @@ export const AppProvider = ({ children }) => {
     // State
     isLoggedIn,
     currentUser,
-    username,
-    password,
+    session,
+    loading,
+    userProfile,
     currentPage,
     selectedCategory,
     selectedAsset,
@@ -174,19 +306,18 @@ export const AppProvider = ({ children }) => {
     demoHoldings,
     orderQuantity,
     marketData,
-    
+
     // Setters
-    setUsername,
-    setPassword,
     setCurrentPage,
     setSelectedCategory,
     setSelectedAsset,
     setDemoBalance,
     setDemoHoldings,
     setOrderQuantity,
-    
+
     // Functions
     handleLogin,
+    handleSignup,
     handleLogout,
     getAllMarketData,
     getCurrentPrice,
@@ -198,4 +329,3 @@ export const AppProvider = ({ children }) => {
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
-
