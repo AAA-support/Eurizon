@@ -1,0 +1,1 @@
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.5rem', fontSize: '0.8rem', padding: '0.3rem 0', borderBottom: '1px solid #4a5568'}}><span>BAC</span><span>$34.56</span><span style={{color: '#f56565'}}>-0.8%</span><span>48.2M</span></div> 
