@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+# Eurizon Investment Client Portal
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive, secure, and user-friendly web application designed to provide clients and administrators with real-time access to investment portfolios, market data, trading capabilities, document management, and analytical tools.
+
+## Features
+
+- **Client Dashboard**: Real-time portfolio monitoring and performance tracking
+- **Admin Panel**: User and document management, payment processing, analytics
+- **Market Data**: Live market information and currency conversion
+- **Demo Trading**: Virtual trading environment for practice
+- **Document Management**: Secure document upload and access
+- **Authentication**: Secure login with Supabase authentication
+
+## Tech Stack
+
+- **Framework**: React 19 with Create React App
+- **Backend**: Supabase (PostgreSQL database + Authentication)
+- **Charts**: Chart.js and Recharts
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Routing**: React Router DOM v7
+
+## Project Structure
+
+```
+├── public/              # Static assets
+├── src/
+│   ├── components/      # React components
+│   │   ├── admin/      # Admin-related components
+│   │   ├── auth/       # Authentication components
+│   │   ├── common/     # Shared components
+│   │   ├── dashboard/  # Dashboard components
+│   │   ├── documents/  # Document management
+│   │   └── trading/    # Trading and market components
+│   ├── context/        # React context providers
+│   ├── lib/            # Utility libraries (Supabase client)
+│   ├── App.js          # Main app component
+│   └── index.js        # Entry point
+├── archive/            # Archived/old project versions
+├── package.json        # Dependencies and scripts
+└── README.md           # This file
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- Supabase account and project
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/AAA-support/Eurizon.git
+cd Eurizon
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Configure environment variables:
+Create a `.env` file in the root directory with your Supabase credentials:
+```
+REACT_APP_SUPABASE_URL=your_supabase_url
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+4. Start the development server:
+```bash
+npm start
+```
+
+The app will open at [http://localhost:3000](http://localhost:3000)
 
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Runs the app in development mode.
 
 ### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Builds the app for production to the `build` folder.
 
 ### `npm run eject`
+**Note: this is a one-way operation!** Ejects from Create React App.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## User Roles
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. **Investment Clients** - Monitor portfolios and access documents
+2. **Administrators** - Manage users, documents, and analytics
+3. **Demo Users** - Practice trading with virtual funds
+4. **Temporary Users** - Limited access for viewing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Security
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Supabase Row Level Security (RLS) policies
+- Secure authentication flows
+- Environment-based configuration
+- Input validation and sanitization
 
-## Learn More
+## Documentation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- [PRD.md](PRD.md) - Product Requirements Document
+- [PROJECT_REVIEW.md](PROJECT_REVIEW.md) - Project review and analysis
+- [REFACTORING_REVIEW.md](REFACTORING_REVIEW.md) - Code refactoring notes
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Support
 
-### Code Splitting
+For support and questions, please contact Eurizon Investment support at support@eurizoninvestment.com
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## License
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Private - Eurizon Investment Management
