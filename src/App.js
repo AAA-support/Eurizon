@@ -1,8 +1,8 @@
 import React from 'react';
-import ErrorBoundary from './components/ErrorBoundary';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import { AppProvider, useApp } from './context/AppContext';
-import LoginPage from './components/LoginPage';
-import MainLayout from './components/MainLayout';
+import LoginPage from './components/auth/LoginPage';
+import MainLayout from './components/dashboard/MainLayout';
 import './App.css';
 
 const AppContent = () => {

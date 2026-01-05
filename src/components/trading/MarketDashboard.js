@@ -1,6 +1,6 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
-import './Dashboard.css';
+import { useApp } from '../../context/AppContext';
+import '../dashboard/Dashboard.css';
 
 const MarketDashboard = () => {
   const {

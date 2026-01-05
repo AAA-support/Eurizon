@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { DollarSign, RefreshCw, TrendingUp, TrendingDown, ArrowUpDown } from 'lucide-react';
 
 const CurrencyConverter = () => {

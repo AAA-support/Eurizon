@@ -1,7 +1,7 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
-import MarketDashboard from './MarketDashboard';
-import ClientDocuments from './ClientDocuments';
+import { useApp } from '../../context/AppContext';
+import MarketDashboard from '../trading/MarketDashboard';
+import ClientDocuments from '../documents/ClientDocuments';
 import './MainLayout.css';
 
 const MainLayout = () => {
