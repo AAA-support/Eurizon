@@ -216,7 +216,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to create demo account for user
-CREATE OR REPLACE FUNCTION create_demo_account(user_account_id BIGINT, demo_balance DECIMAL DEFAULT 100000.00)
+CREATE OR REPLACE FUNCTION create_demo_account(user_account_id BIGINT, demo_balance DECIMAL DEFAULT 100.00)
 RETURNS BOOLEAN AS $$
 BEGIN
   -- Set user's demo cash balance
@@ -257,7 +257,7 @@ BEGIN
     COALESCE(NEW.raw_user_meta_data->>'username', SPLIT_PART(NEW.email, '@', 1)),
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'user_role', 'client'),
-    100000.00, -- Default demo balance
+    100.00, -- Default demo balance
     NOW()
   )
   ON CONFLICT (id) DO NOTHING;

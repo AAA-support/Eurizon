@@ -80,7 +80,7 @@ App will open at: **http://localhost:5173**
 ### Step 5: Test Everything
 
 **Demo Mode:**
-- ✅ All new users start with $100,000 demo cash
+- ✅ All new users start with $100 demo cash
 - ✅ Practice trading without real money
 - ✅ Switch to live mode when ready
 
@@ -125,7 +125,7 @@ App will open at: **http://localhost:5173**
 - ✅ **Performance charts** (profit/loss)
 
 ### Demo Mode Features
-- ✅ $100,000 starting balance
+- ✅ $100 starting balance
 - ✅ Separate demo portfolio
 - ✅ Practice trading
 - ✅ Switch to live mode
@@ -245,7 +245,7 @@ import { LineChart, PieChart, BarChart } from 'recharts';
 ## 🎮 Demo Mode Details
 
 **How It Works:**
-1. All users get $100,000 demo cash
+1. All users get $100 demo cash
 2. Demo trades use `account_type = 'demo'`
 3. Live trades use `account_type = 'live'`
 4. Separate portfolios for each mode
