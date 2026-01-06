@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, TrendingUp, TrendingDown, X } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, X, AlertCircle } from 'lucide-react';
+import { searchStocks, getStockQuote } from '../services/stockAPIService';
 
-const StockSearch = ({ onStockSelect }) => {
+const StockSearch = ({ onStockSelect, useLocalOnly = false }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const searchRef = useRef(null);
 
-  // Mock stock data - replace with Supabase fetch
+  // Mock stock data for demo/fallback
   const mockStocks = [
     { symbol: 'AAPL', name: 'Apple Inc.', price: 175.43, change_percent: 1.24, sector: 'Technology' },
     { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 142.50, change_percent: 0.92, sector: 'Technology' },
@@ -44,25 +46,75 @@ const StockSearch = ({ onStockSelect }) => {
     if (searchQuery.trim().length === 0) {
       setSearchResults([]);
       setShowResults(false);
+      setError(null);
       return;
     }
 
-    setIsLoading(true);
-    // Simulate API delay
-    const timeoutId = setTimeout(() => {
-      const query = searchQuery.toLowerCase();
-      const results = mockStocks.filter(
-        stock =>
-          stock.symbol.toLowerCase().includes(query) ||
-          stock.name.toLowerCase().includes(query)
-      );
-      setSearchResults(results);
-      setShowResults(true);
-      setIsLoading(false);
-    }, 300);
+    const searchTimeout = setTimeout(async () => {
+      setIsLoading(true);
+      setError(null);
 
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
+      try {
+        if (useLocalOnly) {
+          // Use local mock data only
+          const query = searchQuery.toLowerCase();
+          const results = mockStocks.filter(
+            stock =>
+              stock.symbol.toLowerCase().includes(query) ||
+              stock.name.toLowerCase().includes(query)
+          );
+          setSearchResults(results);
+        } else {
+          // Use real API
+          const results = await searchStocks(searchQuery);
+
+          // Fetch quotes for top 5 results
+          const resultsWithQuotes = await Promise.all(
+            results.slice(0, 5).map(async (stock) => {
+              try {
+                const quote = await getStockQuote(stock.symbol);
+                return {
+                  symbol: stock.symbol,
+                  name: stock.name,
+                  price: quote.price,
+                  change_percent: quote.changePercent,
+                  sector: stock.type || 'Stock'
+                };
+              } catch (err) {
+                return {
+                  symbol: stock.symbol,
+                  name: stock.name,
+                  price: 0,
+                  change_percent: 0,
+                  sector: stock.type || 'Stock'
+                };
+              }
+            })
+          );
+
+          setSearchResults(resultsWithQuotes);
+        }
+        setShowResults(true);
+      } catch (err) {
+        console.error('Search error:', err);
+        setError(err.message || 'Failed to search stocks. Using local database.');
+
+        // Fallback to local search
+        const query = searchQuery.toLowerCase();
+        const results = mockStocks.filter(
+          stock =>
+            stock.symbol.toLowerCase().includes(query) ||
+            stock.name.toLowerCase().includes(query)
+        );
+        setSearchResults(results);
+        setShowResults(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 500); // Debounce 500ms
+
+    return () => clearTimeout(searchTimeout);
+  }, [searchQuery, useLocalOnly]);
 
   const handleStockClick = (stock) => {
     setSearchQuery('');
@@ -103,9 +155,16 @@ const StockSearch = ({ onStockSelect }) => {
       {/* Search Results Dropdown */}
       {showResults && (
         <div className="absolute z-50 w-full mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-h-96 overflow-y-auto">
+          {error && (
+            <div className="p-3 bg-yellow-900/30 border-b border-yellow-700/50 flex items-center gap-2 text-yellow-200 text-sm">
+              <AlertCircle size={16} />
+              <span>{error}</span>
+            </div>
+          )}
           {isLoading ? (
             <div className="p-4 text-center text-gray-400">
               <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+              <p className="text-sm mt-2">Searching global markets...</p>
             </div>
           ) : searchResults.length === 0 ? (
             <div className="p-4 text-center text-gray-400">
