@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { BarChart3, TrendingUp, Wallet, Activity } from 'lucide-react';
+import CurrencyConverterWidget from '../components/CurrencyConverterWidget';
 
 const MarketDashboard = () => {
   const { userRole } = useApp();
@@ -73,35 +74,44 @@ const MarketDashboard = () => {
         })}
       </div>
 
-      <div className="card">
-        <div className="card-header">
-          <h2 className="card-title">Top Stocks</h2>
-        </div>
-        <div className="card-content">
-          <div className="overflow-x-auto">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Symbol</th>
-                  <th>Company</th>
-                  <th>Price</th>
-                  <th>Change</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stocks.map((stock, index) => (
-                  <tr key={index}>
-                    <td className="font-bold">{stock.symbol}</td>
-                    <td>{stock.name}</td>
-                    <td>{stock.price}</td>
-                    <td className={stock.positive ? 'text-green' : 'text-red'}>
-                      {stock.change}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="card">
+            <div className="card-header">
+              <h2 className="card-title">Top Stocks</h2>
+            </div>
+            <div className="card-content">
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Symbol</th>
+                      <th>Company</th>
+                      <th>Price</th>
+                      <th>Change</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stocks.map((stock, index) => (
+                      <tr key={index}>
+                        <td className="font-bold">{stock.symbol}</td>
+                        <td>{stock.name}</td>
+                        <td>{stock.price}</td>
+                        <td className={stock.positive ? 'text-green' : 'text-red'}>
+                          {stock.change}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Currency Converter Widget */}
+        <div>
+          <CurrencyConverterWidget />
         </div>
       </div>
     </div>

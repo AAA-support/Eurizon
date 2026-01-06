@@ -1,11 +1,11 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  Menu, 
-  X, 
-  BarChart3, 
-  TrendingUp, 
-  Clock, 
+import {
+  Menu,
+  X,
+  BarChart3,
+  TrendingUp,
+  Clock,
   DollarSign,
   FolderOpen,
   Settings,
@@ -15,6 +15,7 @@ import {
   PlayCircle,
   CreditCard
 } from 'lucide-react';
+import NotificationBell from './NotificationBell';
 
 const Layout = ({ children }) => {
   const { 
@@ -72,9 +73,10 @@ const Layout = ({ children }) => {
               <div className="logo-icon">
                 <span>E</span>
               </div>
-              <div>
+              <div className="flex-1">
                 <h1 className="logo-text">Eurizon Investment Client Portal</h1>
               </div>
+              <NotificationBell />
             </div>
           </div>
 
