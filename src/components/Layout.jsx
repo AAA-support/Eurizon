@@ -16,6 +16,7 @@ import {
   CreditCard
 } from 'lucide-react';
 import NotificationBell from './NotificationBell';
+import EurizonLogo from './EurizonLogo';
 
 const Layout = ({ children }) => {
   const { 
@@ -69,13 +70,10 @@ const Layout = ({ children }) => {
         <div className="sidebar-content">
           {/* Logo */}
           <div className="sidebar-header">
-            <div className="sidebar-logo">
-              <div className="logo-icon">
-                <span>E</span>
-              </div>
-              <div className="flex-1">
-                <h1 className="logo-text">Eurizon Investment Client Portal</h1>
-              </div>
+            <div className="mb-4 px-4 pt-4">
+              <EurizonLogo variant="light" size="small" />
+            </div>
+            <div className="flex items-center justify-end px-4 pb-4">
               <NotificationBell />
             </div>
           </div>
