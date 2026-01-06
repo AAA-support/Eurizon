@@ -31,6 +31,7 @@ const Layout = ({ children }) => {
   const adminNavigationItems = [
     { id: 'dashboard', name: 'Dashboard', icon: BarChart3 },
     { id: 'admin', name: 'Admin', icon: Users },
+    { id: 'stock-management', name: 'Manage Stocks', icon: TrendingUp },
     { id: 'trading', name: 'Trading', icon: TrendingUp },
     { id: 'demo-trading', name: 'Demo Trading', icon: PlayCircle },
     { id: 'portfolio', name: 'Portfolio', icon: Clock },
