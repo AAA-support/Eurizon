@@ -1,11 +1,11 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  Menu, 
-  X, 
-  BarChart3, 
-  TrendingUp, 
-  Clock, 
+import {
+  Menu,
+  X,
+  BarChart3,
+  TrendingUp,
+  Clock,
   DollarSign,
   FolderOpen,
   Settings,
@@ -15,6 +15,8 @@ import {
   PlayCircle,
   CreditCard
 } from 'lucide-react';
+import NotificationBell from './NotificationBell';
+import EurizonLogo from './EurizonLogo';
 
 const Layout = ({ children }) => {
   const { 
@@ -29,9 +31,11 @@ const Layout = ({ children }) => {
   const adminNavigationItems = [
     { id: 'dashboard', name: 'Dashboard', icon: BarChart3 },
     { id: 'admin', name: 'Admin', icon: Users },
+    { id: 'user-portfolios', name: 'User Portfolios', icon: Users },
+    { id: 'stock-management', name: 'Manage Stocks', icon: TrendingUp },
     { id: 'trading', name: 'Trading', icon: TrendingUp },
     { id: 'demo-trading', name: 'Demo Trading', icon: PlayCircle },
-    { id: 'portfolio', name: 'Portfolio', icon: Clock },
+    { id: 'portfolio', name: 'My Portfolio', icon: Clock },
     { id: 'currency', name: 'Currency Converter', icon: DollarSign },
     { id: 'documents', name: 'Documents', icon: FolderOpen },
     { id: 'settings', name: 'Settings', icon: Settings },
@@ -68,13 +72,11 @@ const Layout = ({ children }) => {
         <div className="sidebar-content">
           {/* Logo */}
           <div className="sidebar-header">
-            <div className="sidebar-logo">
-              <div className="logo-icon">
-                <span>E</span>
-              </div>
-              <div>
-                <h1 className="logo-text">Eurizon Investment Client Portal</h1>
-              </div>
+            <div className="mb-4 px-4 pt-4">
+              <EurizonLogo variant="light" size="small" />
+            </div>
+            <div className="flex items-center justify-end px-4 pb-4">
+              <NotificationBell />
             </div>
           </div>
 

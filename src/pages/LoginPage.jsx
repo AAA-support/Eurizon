@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Eye, EyeOff } from 'lucide-react';
+import EurizonLogo from '../components/EurizonLogo';
 
 const LoginPage = () => {
   const { handleLogin, addNotification } = useApp();
@@ -51,13 +52,7 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 flex items-center justify-center p-6">
       <div className="w-full max-w-md mx-auto">
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-4 shadow-lg">
-            <div className="w-12 h-12 bg-gray-800 rounded flex items-center justify-center">
-              <span className="text-white font-bold text-lg">E</span>
-            </div>
-          </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Investment Portal</h1>
-          <p className="text-gray-300 text-sm">Professional Investment Management</p>
+          <EurizonLogo variant="light" size="large" />
         </div>
 
         <div className="bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-2xl p-8 border border-gray-700">
