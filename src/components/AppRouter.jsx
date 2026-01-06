@@ -4,6 +4,7 @@ import Layout from './Layout';
 import LoginPage from '../pages/LoginPage';
 import MarketDashboard from '../pages/MarketDashboard';
 import AdminDashboard from '../pages/AdminDashboard';
+import AdminStockManagement from '../pages/AdminStockManagement';
 import Trading from '../pages/Trading';
 import DemoTrading from '../pages/DemoTrading';
 import Portfolio from '../pages/Portfolio';
@@ -27,6 +28,12 @@ const AppRouter = () => {
       case 'admin':
         return userRole === 'admin' ? (
           <AdminDashboard />
+        ) : (
+          <div className="p-6 text-white">Access Denied</div>
+        );
+      case 'stock-management':
+        return userRole === 'admin' ? (
+          <AdminStockManagement />
         ) : (
           <div className="p-6 text-white">Access Denied</div>
         );
