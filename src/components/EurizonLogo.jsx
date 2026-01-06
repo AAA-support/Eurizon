@@ -54,7 +54,7 @@ const EurizonLogo = ({ variant = 'light', size = 'normal' }) => {
             INVESTMENT
           </text>
           <text x="187" y="270" fill={textColor} fontSize="28" fontWeight="normal" fontFamily="Arial, sans-serif">
-            SICCAV LUXEMBOURG
+            SICAV LUXEMBOURG
           </text>
         </g>
       </svg>

@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { BarChart3, TrendingUp, Wallet, Activity } from 'lucide-react';
 import CurrencyConverterWidget from '../components/CurrencyConverterWidget';
+import StockSearch from '../components/StockSearch';
 
 const MarketDashboard = () => {
-  const { userRole } = useApp();
+  const { userRole, addNotification } = useApp();
+  const [selectedStock, setSelectedStock] = useState(null);
+
+  const handleStockSelect = (stock) => {
+    setSelectedStock(stock);
+    addNotification('success', `Selected ${stock.symbol} - ${stock.name}`);
+  };
 
   const stats = [
     {
@@ -50,6 +57,11 @@ const MarketDashboard = () => {
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Market Dashboard</h1>
         <p className="text-gray-400 mt-2">Overview of your investment portfolio</p>
+      </div>
+
+      {/* Stock Search */}
+      <div className="mb-6">
+        <StockSearch onStockSelect={handleStockSelect} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
